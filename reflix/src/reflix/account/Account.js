@@ -1,4 +1,5 @@
-import User from "./AccountUser"
+import User from "./User"
+import Wallet from "./Wallet"
 
 class Account {
   constructor() {
@@ -11,14 +12,15 @@ class Account {
     ]
     this.idTracker = 0
     this.maxAllowedUsers = 4
+    this.wallet=new Wallet(100)
   }
-  getRandmonUserColor = () => {
+  getRandmonUserColor() {
     const availableColors = this.colors.filter((c) => c.isUsed === false)
     const randomColor =
       availableColors[Math.floor(Math.random() * availableColors.length)]
     return randomColor.name
   }
-  addUserToAccount = (name) => {
+  addUserToAccount(name) {
     if (this.users.length < this.maxAllowedUsers) {
       const id = this.idTracker
       const color = this.getRandmonUserColor()

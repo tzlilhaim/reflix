@@ -13,16 +13,17 @@ class App extends Component {
     this.state = {
       users: reflix.users,
       movies: reflix.catalog,
+      budget: reflix.wallet.money,
     }
   }
   toggleRentedStatus = {
     rentMovie: (movieId) => {
-      const allMovies = this.state.movies
+      const allMovies = [...this.state.movies]
       allMovies.find((movie) => movie.id === movieId).isRented = true
       this.setState({ movies: allMovies })
     },
     unRentMovie: (movieId) => {
-      const allMovies = this.state.movies
+      const allMovies = [...this.state.movies]
       allMovies.find((movie) => movie.id === movieId).isRented = false
       this.setState({ movies: allMovies })
     },
@@ -50,6 +51,7 @@ class App extends Component {
             path="/catalog"
             render={() => (
               <Catalog
+                budget={this.state.budget}
                 rented={this.state.movies.filter((m) => m.isRented)}
                 movies={this.state.movies}
                 toggleRentedStatus={this.toggleRentedStatus}
