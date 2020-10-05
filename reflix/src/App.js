@@ -13,10 +13,9 @@ class App extends Component {
     this.state = {
       users: reflix.users,
       movies: reflix.catalog,
-      rented: [],
     }
   }
-  changeRentedStatus = {
+  toggleRentedStatus = {
     rentMovie: (movieId) => {
       const allMovies = this.state.movies
       allMovies.find((movie) => movie.id === movieId).isRented = true
@@ -51,9 +50,9 @@ class App extends Component {
             path="/catalog"
             render={() => (
               <Catalog
-                rented={this.state.rented}
+                rented={this.state.movies.filter((m) => m.isRented)}
                 movies={this.state.movies}
-                changeRentedStatus={this.changeRentedStatus}
+                toggleRentedStatus={this.toggleRentedStatus}
               />
             )}
           />

@@ -7,13 +7,18 @@ class Catalog extends Component {
     return (
       <div id="catalog">
         <h2>Catalog:</h2>
-        {this.props.rented.length ? <Rented /> : null}
-        <div id="movies">
+        {this.props.rented.length ? (
+          <Rented
+          toggleRentedStatus={this.props.toggleRentedStatus}
+            movies={this.props.rented}
+          />
+        ) : null}
+        <div id="all-movies">
           {this.props.movies.map((movie, index) => {
             const rentingHandler = {
               btnFunc: movie.isRented
-                ? this.props.changeRentedStatus.unRentMovie
-                : this.props.changeRentedStatus.rentMovie,
+                ? this.props.toggleRentedStatus.unRentMovie
+                : this.props.toggleRentedStatus.rentMovie,
               btnText: movie.isRented ? "-" : "+",
             }
             return (
