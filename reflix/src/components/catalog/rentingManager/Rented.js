@@ -10,8 +10,8 @@ class Rented extends Component {
           {this.props.movies.map((movie,index) => {
             const rentingHandler = {
               btnFunc: movie.isRented
-                ? this.props.changeRentedStatus.unRentMovie
-                : this.props.changeRentedStatus.rentMovie,
+                ? this.props.toggleRentedStatus.unRentMovie
+                : this.props.toggleRentedStatus.rentMovie,
               btnText: movie.isRented ? "-" : "+",
             }
             return (
