@@ -57,17 +57,11 @@ class Catalog extends Component {
           {this.state.movies
             .filter((m) => m.isFilteredIn)
             .map((movie, index) => {
-              const rentingHandler = {
-                btnFunc: movie.isRented
-                  ? this.props.toggleRentedStatus.unRentMovie
-                  : this.props.toggleRentedStatus.rentMovie,
-                btnText: movie.isRented ? "-" : "+",
-              }
               return (
                 <Movie
                   key={`m-${index}`}
                   movie={movie}
-                  rentingHandler={rentingHandler}
+                  toggleRentedStatus={this.props.toggleRentedStatus}
                 />
               )
             })}

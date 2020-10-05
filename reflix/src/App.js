@@ -6,6 +6,7 @@ import reflix from "./reflix/reflix"
 import Logo from "./components/logo/Logo"
 import Landing from "./components/landing/Landing"
 import Catalog from "./components/catalog/Catalog"
+import MovieDetails from "./components/catalog/moviesManager/MovieDetail"
 
 class App extends Component {
   constructor() {
@@ -58,6 +59,17 @@ class App extends Component {
               />
             )}
           />
+          <Route
+            exact
+            path="/movies/:id"
+            render={({ match }) => (
+              <MovieDetails
+                match={match}
+                state={this.state}
+                toggleRentedStatus={this.toggleRentedStatus}
+              />
+            )}
+          ></Route>
         </div>
       </Router>
     )

@@ -1,15 +1,18 @@
 import React, { Component } from "react"
+import { Link } from "react-router-dom"
 import RentingHandler from "../rentingManager/RentingHandler"
 
 class Movie extends Component {
   render() {
     return (
       <div className="movie" data-id={this.props.movie.id}>
-        <span>{this.props.movie.title}</span>
         <RentingHandler
-          state={this.props.rentingHandler}
-          movieId={this.props.movie.id}
+          toggleRentedStatus={this.props.toggleRentedStatus}
+          movie={this.props.movie}
         />
+        <Link to={`/movies/${this.props.movie.id}`}>
+          <span>{this.props.movie.title}</span>
+        </Link>
       </div>
     )
   }
