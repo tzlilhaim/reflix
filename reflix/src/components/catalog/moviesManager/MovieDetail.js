@@ -10,9 +10,20 @@ class MovieDetail extends Component {
 
     return movie ? (
       <div id="movie-detail" data-id={movie.id}>
-        <span>{movie.title}</span>
-        <p>{movie.descrShort}</p>
-        <RentingHandler toggleRentedStatus={this.props.toggleRentedStatus} movie={movie}/>
+        <Link className="back" to={`/catalog`}>
+          {"< Back"}
+        </Link>
+        <RentingHandler
+          toggleRentedStatus={this.props.toggleRentedStatus}
+          movie={movie}
+        />
+        <h2 className="movie-title-year">
+          {movie.title} ({movie.year})
+        </h2>
+        <div className="movie-img">
+          <img src={movie.img} alt={movie.title}></img>
+        </div>
+        <p className="movie-description">{movie.descrShort}</p>
       </div>
     ) : (
       <Redirect to={`/catalog`} />
