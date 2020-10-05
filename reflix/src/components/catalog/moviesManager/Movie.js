@@ -10,8 +10,11 @@ class Movie extends Component {
           toggleRentedStatus={this.props.toggleRentedStatus}
           movie={this.props.movie}
         />
+        <div className="movie-price">price: {this.props.movie.price}$</div>
         <Link to={`/movies/${this.props.movie.id}`}>
-          <span>{this.props.movie.title}</span>
+          <div className="movie-img">
+            <img src={this.props.movie.img} alt={this.props.movie.title}></img>
+          </div>
         </Link>
       </div>
     )
