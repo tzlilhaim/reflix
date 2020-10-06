@@ -7,18 +7,12 @@ class Rented extends Component {
       <div id="rented">
         <h2>Rented:</h2>
         <div id="rented-movies">
-          {this.props.movies.map((movie,index) => {
-            const rentingHandler = {
-              btnFunc: movie.isRented
-                ? this.props.toggleRentedStatus.unRentMovie
-                : this.props.toggleRentedStatus.rentMovie,
-              btnText: movie.isRented ? "-" : "+",
-            }
+          {this.props.movies.map((movie, index) => {
             return (
               <Movie
                 key={`rm-${index}`}
                 movie={movie}
-                rentingHandler={rentingHandler}
+                toggleRentedStatus={this.props.toggleRentedStatus}
               />
             )
           })}
