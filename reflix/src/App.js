@@ -20,13 +20,20 @@ class App extends Component {
   toggleRentedStatus = {
     rentMovie: (movieId) => {
       const allMovies = [...this.state.movies]
-      allMovies.find((movie) => movie.id === movieId).isRented = true
-      this.setState({ movies: allMovies })
+      const movie = allMovies.find((movie) => movie.id === movieId)
+      const updatedBudget = this.state.budget - movie.price
+      if (updatedBudget >= 0) {
+        movie.isRented = true
+        this.setState({ movies: allMovies })
+        this.setState({ budget: updatedBudget })
+      }
     },
     unRentMovie: (movieId) => {
       const allMovies = [...this.state.movies]
-      allMovies.find((movie) => movie.id === movieId).isRented = false
+      const movie = allMovies.find((movie) => movie.id === movieId)
+      movie.isRented = false
       this.setState({ movies: allMovies })
+      this.setState({ budget: this.state.budget + movie.price })
     },
   }
 
@@ -67,6 +74,7 @@ class App extends Component {
                 match={match}
                 state={this.state}
                 toggleRentedStatus={this.toggleRentedStatus}
+                budget={this.state.budget}
               />
             )}
           ></Route>

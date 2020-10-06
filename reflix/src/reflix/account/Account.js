@@ -12,7 +12,7 @@ class Account {
     ]
     this.idTracker = 0
     this.maxAllowedUsers = 4
-    this.wallet=new Wallet(100)
+    this.wallet=new Wallet(8)
   }
   getRandmonUserColor() {
     const availableColors = this.colors.filter((c) => c.isUsed === false)

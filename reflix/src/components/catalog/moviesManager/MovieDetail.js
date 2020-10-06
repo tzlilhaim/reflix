@@ -13,10 +13,6 @@ class MovieDetail extends Component {
         <Link className="back" to={`/catalog`}>
           {"< Back"}
         </Link>
-        <RentingHandler
-          toggleRentedStatus={this.props.toggleRentedStatus}
-          movie={movie}
-        />
         <h2 className="movie-title-year">
           {movie.title} ({movie.year})
         </h2>
@@ -24,6 +20,14 @@ class MovieDetail extends Component {
           <img src={movie.img} alt={movie.title}></img>
         </div>
         <p className="movie-description">{movie.descrShort}</p>
+        <div className="movie-price">price: {movie.price}$</div>
+        <RentingHandler
+          disabled={
+            movie.isRented ? false : this.props.budget - movie.price < 0
+          }
+          toggleRentedStatus={this.props.toggleRentedStatus}
+          movie={movie}
+        />
       </div>
     ) : (
       <Redirect to={`/catalog`} />

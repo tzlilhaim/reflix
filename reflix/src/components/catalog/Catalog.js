@@ -19,6 +19,20 @@ class Catalog extends Component {
       }),
     }
   }
+  componentWillReceiveProps(nextProps) {
+    if (this.props != nextProps) {
+      this.setState({
+        movies: [...nextProps.movies].map((m) => {
+          m["isFilteredIn"] = true
+          return m
+        }),
+        rented: [...nextProps.rented].map((m) => {
+          m["isFilteredIn"] = true
+          return m
+        }),
+      })
+    }
+  }
   handleSearch = (searchInput) => {
     if (searchInput !== this.state.search) {
       const filteredMovies = [...this.state.movies].map((m) => {
@@ -62,6 +76,7 @@ class Catalog extends Component {
                   key={`m-${index}`}
                   movie={movie}
                   toggleRentedStatus={this.props.toggleRentedStatus}
+                  budget={this.props.budget}
                 />
               )
             })}
