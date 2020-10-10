@@ -1,6 +1,6 @@
 #app-logo {
-  width: 100px;
-  justify-self: end;
+  width: fit-content;
+  float: right;
   font-weight: bold;
   letter-spacing: 2px;
   text-align: center;

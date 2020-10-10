@@ -1,5 +1,4 @@
 import User from "./User"
-import Wallet from "./Wallet"
 
 class Account {
   constructor() {
@@ -12,7 +11,6 @@ class Account {
     ]
     this.idTracker = 0
     this.maxAllowedUsers = 4
-    this.wallet=new Wallet(8)
   }
   getRandmonUserColor() {
     const availableColors = this.colors.filter((c) => c.isUsed === false)

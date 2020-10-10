@@ -1,16 +1,19 @@
 #header {
   width: 100%;
-  height: auto;
   min-height: fit-content;
   padding: 10px;
   display: grid;
   grid-auto-flow: column;
+  grid-template-columns: 2fr 1fr 0.5fr;
+  margin-bottom: 20px;
+  font-size: larger;
 }
 
 #main-links {
   display: grid;
   grid-auto-flow: column;
   text-align: center;
+  height: 60px;
 }
 #main-links > a {
   text-decoration: none;
@@ -19,4 +22,34 @@
 
 #app-logo {
   text-align: end;
+}
+
+.active-tab {
+  background-color: rgb(83, 83, 83);
+}
+.inactive-tab {
+  background-color: rgba(83, 83, 83, 0.2);
+}
+#main-links > a.inactive-tab:hover {
+  filter: brightness(150%);
+}
+
+#main-links > a {
+  color: white;
+  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 710px) {
+  #active-user > .greeting {
+    display: none;
+  }
+  h2 {
+    font-size: large;
+  }
+  #main-links {
+    height: 50px;
+  }
 }

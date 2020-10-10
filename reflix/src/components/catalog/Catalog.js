@@ -1,100 +1,82 @@
-import React, { Component } from "react"
+import React, { useState, useEffect } from "react"
 import Movie from "./moviesManager/Movie"
 import Rented from "./rentingManager/Rented"
 import Search from "./searchManager/Search"
 import Budget from "./budgetManager/Budget"
 import "../../styles/catalog.css"
 
-class Catalog extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      search: "",
-      movies: [...this.props.movies].map((m) => {
-        m["isFilteredIn"] = true
-        return m
-      }),
-      rented: [...this.props.rented].map((m) => {
-        m["isFilteredIn"] = true
-        return m
-      }),
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props != nextProps) {
-      this.setState({
-        movies: [...nextProps.movies].map((m) => {
-          m["isFilteredIn"] = true
-          return m
-        }),
-        rented: [...nextProps.rented].map((m) => {
-          m["isFilteredIn"] = true
-          return m
-        }),
-      })
-    }
-  }
-  handleSearch = (searchInput) => {
-    if (searchInput !== this.state.search) {
-      const filteredMovies = [...this.state.movies].map((m) => {
-        m.isFilteredIn = m.title
-          .toLowerCase()
-          .includes(searchInput.toLowerCase())
-        return m
-      })
-      const filteredRented = [...this.state.rented].map((r) => {
-        r.isFilteredIn = r.title
-          .toLowerCase()
-          .includes(searchInput.toLowerCase())
-        return r
-      })
+export default function Catalog(props) {
+  const [search, setSearch] = useState("")
+  const [movies, setMovies] = useState([...props.movies])
+  const [rented, setRented] = useState([...props.rented])
+  const [filteredMovies, setFilteredMovies] = useState([...movies])
+  const [filteredRented, setFilteredRented] = useState([...rented])
 
-      this.setState({
-        search: searchInput,
-        movies: filteredMovies,
-        rented: filteredRented,
+  useEffect(() => {
+    setMovies([...props.movies])
+    setRented([...props.rented])
+  }, [props])
+
+  const changeSearch = (e) => {
+    setSearch(e.target.value)
+  }
+  useEffect(() => {
+    if (search.length) {
+      const validMovies = []
+      movies.forEach((m) => {
+        let movieTitle = m.title.toLowerCase()
+        let searchedValue = search.toLowerCase()
+        if (movieTitle.includes(searchedValue)) {
+          validMovies.push(m)
+        }
       })
+      setFilteredMovies(validMovies)
+      const validRented = []
+      rented.forEach((r) => {
+        let movieTitle = r.title.toLowerCase()
+        let searchedValue = search.toLowerCase()
+        if (movieTitle.includes(searchedValue)) {
+          validRented.push(r)
+        }
+      })
+      setFilteredRented(validRented)
+    } else {
+      setFilteredMovies([...movies])
+      setFilteredRented([...rented])
     }
+  }, [search, movies, rented])
+
+  if (!props.isActiveTab) {
+    props.setActiveTab("catalog")
   }
-  componentDidMount() {
-    if (!this.props.isActiveTab) {
-      this.props.setActiveTab("catalog")
-    }
-  }
-  render() {
-    return (
-      <div id="catalog">
-        <div className="header">
-          <h2>Catalog:</h2>
-          <Search handleSearch={this.handleSearch} />
-          <Budget budget={this.props.budget} />
-        </div>
-        <div className="main">
-          {this.state.rented.filter((m) => m.isFilteredIn).length ? (
-            <Rented
-              toggleRentedStatus={this.props.toggleRentedStatus}
-              movies={this.state.rented.filter((r) => r.isFilteredIn)}
-            />
-          ) : null}
-          <h2>All Movies:</h2>
-          <div id="all-movies">
-            {this.state.movies
-              .filter((m) => m.isFilteredIn)
-              .map((movie, index) => {
-                return (
-                  <Movie
-                    key={`m-${index}`}
-                    movie={movie}
-                    toggleRentedStatus={this.props.toggleRentedStatus}
-                    budget={this.props.budget}
-                  />
-                )
-              })}
-          </div>
+  return (
+    <div id="catalog">
+      <div className="header">
+        <h2>Catalog:</h2>
+        <Search onChange={changeSearch} />
+        <Budget budget={props.budget} />
+      </div>
+      <div className="main">
+        {filteredRented.length ? (
+          <Rented
+            toggleRentedStatus={props.toggleRentedStatus}
+            movies={filteredRented}
+          />
+        ) : null}
+        <h2>All Movies:</h2>
+        <div id="all-movies">
+          {filteredMovies.map((movie, index) => {
+            return (
+              <Movie
+                key={`m-${index}`}
+                movie={movie}
+                toggleRentedStatus={props.toggleRentedStatus}
+                budget={props.budget}
+              />
+            )
+          })}
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
-
-export default Catalog

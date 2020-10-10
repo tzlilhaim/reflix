@@ -27,27 +27,6 @@ a {
   color: white;
 }
 
-.active-tab {
-  background-color: rgb(83, 83, 83);
-}
-.inactive-tab {
-  background-color: rgba(83, 83, 83, 0.2);
-}
-#main-links > a.inactive-tab:hover {
-  filter: brightness(150%);
-}
-
-.App > #header {
-  height: 80px;
-}
-
-.App #main-links > a {
-  color: white;
-  display: block;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 h2 {
   letter-spacing: 3px;
 }

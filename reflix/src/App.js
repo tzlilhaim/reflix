@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { useState, useEffect } from "react"
 import "./styles/header.css"
 import { BrowserRouter as Router, Route, Link } from "react-router-dom"
 import "./styles/app.css"
@@ -8,139 +8,167 @@ import Logo from "./components/logo/Logo"
 import Landing from "./components/landing/Landing"
 import Catalog from "./components/catalog/Catalog"
 import MovieDetails from "./components/catalog/moviesManager/MovieDetail"
+import User from "./components/user/User"
 
-class App extends Component {
-  constructor() {
-    super()
-    this.state = {
-      users: reflix.users,
-      movies: reflix.catalog,
-      budget: reflix.wallet.money,
-      activeTab: "home",
-      snackBarOpen: false,
-      snackBarMsg: "",
-    }
-  }
-  toggleRentedStatus = {
+export default function App() {
+  const [users, setUsers] = useState([...reflix.users])
+  const [activeUser, setActiveUser] = useState(
+    users.find((u) => {
+      return u.id === localStorage.getItem("userId")
+    }) || users[0]
+  )
+  const [movies, setMovies] = useState(
+    [...reflix.catalog].map((m) => {
+      m["isRented"] = activeUser.rented.includes(m)
+      return m
+    })
+  )
+  const [rented, setRented] = useState([...activeUser.rented])
+  const [activeTab, setActiveTab] = useState("home")
+  const [snackBarOpen, setSnackBarOpen] = useState(false)
+  const [snackBarMsg, setSnackBarMsg] = useState("")
+
+  const toggleRentedStatus = {
     rentMovie: (movieId) => {
-      const allMovies = [...this.state.movies]
-      const movie = allMovies.find((movie) => movie.id === movieId)
-      const updatedBudget = this.state.budget - movie.price
-      if (updatedBudget >= 0) {
-        movie.isRented = true
-        this.setState({
-          movies: allMovies,
-          budget: updatedBudget,
-          snackBarOpen: true,
-          snackBarMsg: `rented ${movie.title} successfully!`,
-        })
+      const movie = [...movies].find((movie) => movie.id === movieId)
+      if (movie) {
+        const user = { ...activeUser }
+        if (user.wallet.isEnoughMoney(movie.price)) {
+          user.wallet.purchase(movie.price)
+          user.rented.push(movie)
+          setActiveUser(user)
+          setSnackBarMsg(`Rented ${movie.title} successfully!`)
+          setSnackBarOpen(true)
+        } else {
+          setSnackBarMsg(
+            `Cannot rent ${movie.title}, since it is out of budget`
+          )
+          setSnackBarOpen(true)
+        }
+      } else {
+        setSnackBarMsg(`${movie.title} was not found`)
+        setSnackBarOpen(true)
       }
     },
     unRentMovie: (movieId) => {
-      const allMovies = [...this.state.movies]
-      const movie = allMovies.find((movie) => movie.id === movieId)
-      movie.isRented = false
-      this.setState({
-        movies: allMovies,
-        budget: this.state.budget + movie.price,
-        snackBarOpen: true,
-        snackBarMsg: `${movie.title} is not rented anymore`,
+      const user = { ...activeUser }
+      let rentedMovie = null
+      user.rented.forEach((movie, index) => {
+        if (movie.id === movieId) {
+          rentedMovie = { movie, index }
+        }
       })
+      if (rentedMovie) {
+        user.rented.splice(rentedMovie.index, 1)
+        user.wallet.getRefund(rentedMovie.movie.price)
+        setActiveUser(user)
+        setSnackBarMsg(
+          `${rentedMovie.movie.title} is not rented anymore for ${user.name}`
+        )
+        setSnackBarOpen(true)
+      } else {
+        setSnackBarMsg(
+          `${rentedMovie.movie.title} wasn't rented for ${user.name}`
+        )
+        setSnackBarOpen(true)
+      }
     },
   }
-  snackBarClose = (event) => {
-    this.setState({ snackBarOpen: false })
+  const snackBarClose = (event) => {
+    setSnackBarOpen(false)
   }
-  setActiveTab = (tabName) => {
-    this.setState({ activeTab: tabName })
-  }
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <div id="header">
-            <div id="main-links">
-              <Link
-                to="/"
-                className={
-                  this.state.activeTab === "home"
-                    ? "active-tab"
-                    : "inactive-tab"
-                }
-              >
-                Home
-              </Link>
-              <Link
-                to="/catalog"
-                className={
-                  this.state.activeTab === "catalog"
-                    ? "active-tab"
-                    : "inactive-tab"
-                }
-              >
-                Catalog
-              </Link>
-            </div>
-            <Logo />
-            <Snackbar
-              open={this.state.snackBarOpen}
-              autoHideDuration={3000}
-              onClose={this.snackBarClose}
-              message={<span id="snackbar-msg">{this.state.snackBarMsg}</span>}
-              action={
-                <IconButton
-                  key="close"
-                  arial-label="Close"
-                  color="inherit"
-                  onClick={this.snackBarClose}
-                >
-                  x
-                </IconButton>
-              }
-            />
-          </div>
-          <Route
-            exact
-            path="/"
-            render={() => (
-              <Landing
-                users={this.state.users}
-                setActiveTab={this.setActiveTab}
-                isActiveTab={this.state.activeTab === "home"}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/catalog"
-            render={({ match }) => (
-              <Catalog
-                budget={this.state.budget}
-                rented={this.state.movies.filter((m) => m.isRented)}
-                movies={this.state.movies}
-                toggleRentedStatus={this.toggleRentedStatus}
-                setActiveTab={this.setActiveTab}
-                isActiveTab={this.state.activeTab === "catalog"}
-              />
-            )}
-          />
-          <Route
-            exact
-            path="/movies/:id"
-            render={({ match }) => (
-              <MovieDetails
-                match={match}
-                state={this.state}
-                toggleRentedStatus={this.toggleRentedStatus}
-                budget={this.state.budget}
-                setActiveTab={this.setActiveTab}
-              />
-            )}
-          ></Route>
-        </div>
-      </Router>
-    )
-  }
-}
 
-export default App
+  useEffect(() => {
+    setMovies(
+      [...reflix.catalog].map((m) => {
+        m["isRented"] = activeUser.rented.includes(m)
+        return m
+      })
+    )
+    setRented([...activeUser.rented])
+  }, [activeUser])
+
+  return (
+    <Router>
+      <div className="App">
+        <Logo />
+        <div id="header">
+          <div id="main-links">
+            <Link
+              to="/"
+              className={activeTab === "home" ? "active-tab" : "inactive-tab"}
+            >
+              Home
+            </Link>
+            <Link
+              to="/catalog"
+              className={
+                activeTab === "catalog" ? "active-tab" : "inactive-tab"
+              }
+            >
+              Catalog
+            </Link>
+          </div>
+          {activeUser && activeTab !== "home" ? (
+            <User user={activeUser} />
+          ) : null}
+          <Snackbar
+            open={snackBarOpen}
+            autoHideDuration={3000}
+            onClose={snackBarClose}
+            message={<span id="snackbar-msg">{snackBarMsg}</span>}
+            action={
+              <IconButton
+                key="close"
+                arial-label="Close"
+                color="inherit"
+                onClick={snackBarClose}
+              >
+                x
+              </IconButton>
+            }
+          />
+        </div>
+        <Route
+          exact
+          path="/"
+          render={() => (
+            <Landing
+              users={users}
+              setActiveUser={setActiveUser}
+              setActiveTab={setActiveTab}
+              isActiveTab={activeTab === "home"}
+            />
+          )}
+        />
+        <Route
+          exact
+          path="/catalog"
+          render={() => (
+            <Catalog
+              budget={activeUser.wallet.money}
+              rented={rented}
+              movies={movies}
+              toggleRentedStatus={toggleRentedStatus}
+              setActiveTab={setActiveTab}
+              isActiveTab={activeTab === "catalog"}
+            />
+          )}
+        />
+        <Route
+          exact
+          path="/movies/:id"
+          render={({ match }) => (
+            <MovieDetails
+              match={match}
+              movies={movies}
+              toggleRentedStatus={toggleRentedStatus}
+              budget={activeUser.wallet.money}
+              setActiveTab={setActiveTab}
+            />
+          )}
+        ></Route>
+      </div>
+    </Router>
+  )
+}

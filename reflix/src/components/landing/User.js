@@ -1,20 +1,21 @@
-import React, { Component } from "react"
+import React from "react"
 import { Link } from "react-router-dom"
 
-class User extends Component {
-  render() {
-    return (
-      <Link to={`/catalog`}>
-        <div
-          className="user"
-          data-id={this.props.id}
-          data-color={this.props.color}
-        >
-          <span className="username">{this.props.name}</span>
-        </div>
-      </Link>
-    )
+export default function User(props) {
+  const logIntoUser = () => {
+    props.setActiveUser(props.user)
+    localStorage.setItem("userId", props.user.id)
   }
+  return (
+    <Link to={`/catalog`}>
+      <div
+        className="user"
+        data-id={props.user.id}
+        data-color={props.user.color}
+        onClick={logIntoUser}
+      >
+        <span className="username">{props.user.name}</span>
+      </div>
+    </Link>
+  )
 }
-
-export default User
