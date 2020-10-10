@@ -1,0 +1,33 @@
+#movie-detail {
+  display: grid;
+}
+
+.movie-description {
+  width: 100%;
+  max-width: 1000px;
+  justify-self: center;
+  font-size: larger;
+}
+.movie-description p {
+  text-align: start;
+  line-height: 30px;
+}
+
+.back-btn {
+  font-size: larger;
+  width: 200px;
+  justify-self: center;
+}
+
+a.back-btn:hover,
+a.back-btn:active {
+  background-color: rgba(83, 83, 83, 0.2);
+}
+
+#movie-detail div.movie{
+    justify-self: center;
+}
+
+#movie-detail #budget{
+  justify-self: end;
+}

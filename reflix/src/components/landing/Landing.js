@@ -1,7 +1,13 @@
 import React, { Component } from "react"
 import User from "./User"
+import "../../styles/landing.css"
 
 class Landing extends Component {
+  componentDidMount() {
+    if (!this.props.isActiveTab) {
+      this.props.setActiveTab("home")
+    }
+  }
   render() {
     return (
       <div id="home">
@@ -13,7 +19,7 @@ class Landing extends Component {
                 id={user.id}
                 key={`u-${index}`}
                 name={user.name}
-                color={user.color.name}
+                color={user.color}
               />
             )
           })}

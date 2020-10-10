@@ -1,7 +1,8 @@
 import React, { Component } from "react"
-import logo from "./logo.svg"
+import "./styles/header.css"
 import { BrowserRouter as Router, Route, Link } from "react-router-dom"
-import "./App.css"
+import "./styles/app.css"
+import { Snackbar, IconButton } from "@material-ui/core"
 import reflix from "./reflix/reflix"
 import Logo from "./components/logo/Logo"
 import Landing from "./components/landing/Landing"
@@ -15,6 +16,9 @@ class App extends Component {
       users: reflix.users,
       movies: reflix.catalog,
       budget: reflix.wallet.money,
+      activeTab: "home",
+      snackBarOpen: false,
+      snackBarMsg: "",
     }
   }
   toggleRentedStatus = {
@@ -24,45 +28,99 @@ class App extends Component {
       const updatedBudget = this.state.budget - movie.price
       if (updatedBudget >= 0) {
         movie.isRented = true
-        this.setState({ movies: allMovies })
-        this.setState({ budget: updatedBudget })
+        this.setState({
+          movies: allMovies,
+          budget: updatedBudget,
+          snackBarOpen: true,
+          snackBarMsg: `rented ${movie.title} successfully!`,
+        })
       }
     },
     unRentMovie: (movieId) => {
       const allMovies = [...this.state.movies]
       const movie = allMovies.find((movie) => movie.id === movieId)
       movie.isRented = false
-      this.setState({ movies: allMovies })
-      this.setState({ budget: this.state.budget + movie.price })
+      this.setState({
+        movies: allMovies,
+        budget: this.state.budget + movie.price,
+        snackBarOpen: true,
+        snackBarMsg: `${movie.title} is not rented anymore`,
+      })
     },
   }
-
+  snackBarClose = (event) => {
+    this.setState({ snackBarOpen: false })
+  }
+  setActiveTab = (tabName) => {
+    this.setState({ activeTab: tabName })
+  }
   render() {
     return (
       <Router>
         <div className="App">
-          <div id="home-background"></div>
-          <div id="main-links">
-            <Link to="/">Home</Link>
-            <Link to="/catalog">Catalog</Link>
-          </div>
-          <div id="app-logo">
+          <div id="header">
+            <div id="main-links">
+              <Link
+                to="/"
+                className={
+                  this.state.activeTab === "home"
+                    ? "active-tab"
+                    : "inactive-tab"
+                }
+              >
+                Home
+              </Link>
+              <Link
+                to="/catalog"
+                className={
+                  this.state.activeTab === "catalog"
+                    ? "active-tab"
+                    : "inactive-tab"
+                }
+              >
+                Catalog
+              </Link>
+            </div>
             <Logo />
+            <Snackbar
+              open={this.state.snackBarOpen}
+              autoHideDuration={3000}
+              onClose={this.snackBarClose}
+              message={<span id="snackbar-msg">{this.state.snackBarMsg}</span>}
+              action={
+                <IconButton
+                  key="close"
+                  arial-label="Close"
+                  color="inherit"
+                  onClick={this.snackBarClose}
+                >
+                  x
+                </IconButton>
+              }
+            />
           </div>
           <Route
             exact
             path="/"
-            render={() => <Landing users={this.state.users} />}
+            render={() => (
+              <Landing
+                users={this.state.users}
+                setActiveTab={this.setActiveTab}
+                isActiveTab={this.state.activeTab === "home"}
+              />
+            )}
           />
           <Route
             exact
             path="/catalog"
-            render={() => (
+            render={({ match }) => (
               <Catalog
                 budget={this.state.budget}
                 rented={this.state.movies.filter((m) => m.isRented)}
                 movies={this.state.movies}
                 toggleRentedStatus={this.toggleRentedStatus}
+                setActiveTab={this.setActiveTab}
+                isActiveTab={this.state.activeTab === "catalog"}
               />
             )}
           />
@@ -75,6 +133,7 @@ class App extends Component {
                 state={this.state}
                 toggleRentedStatus={this.toggleRentedStatus}
                 budget={this.state.budget}
+                setActiveTab={this.setActiveTab}
               />
             )}
           ></Route>

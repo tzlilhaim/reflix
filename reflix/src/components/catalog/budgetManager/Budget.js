@@ -1,8 +1,9 @@
 import React, { Component } from "react"
+import "../../../styles/budget.css"
 
 class Budget extends Component {
   render() {
-    return <div id="budget">Budget: {this.props.budget}$</div>
+    return <h3 id="budget">Budget: {this.props.budget}$</h3>
   }
 }
 

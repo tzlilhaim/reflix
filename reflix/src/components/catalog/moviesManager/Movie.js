@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { Link } from "react-router-dom"
 import RentingHandler from "../rentingManager/RentingHandler"
+import "../../../styles/movie.css"
 
 class Movie extends Component {
   render() {

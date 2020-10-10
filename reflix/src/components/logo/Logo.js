@@ -2,7 +2,7 @@ import React, { Component } from "react"
 
 class Logo extends Component {
   render() {
-    return <div className="logo">REFLIX</div>
+    return <div id="app-logo">REFLIX</div>
   }
 }
 

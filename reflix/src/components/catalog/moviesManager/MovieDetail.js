@@ -1,8 +1,17 @@
 import React, { Component } from "react"
 import { Link, Redirect } from "react-router-dom"
-import RentingHandler from "../rentingManager/RentingHandler"
+import Movie from "./Movie"
+import Budget from "../budgetManager/Budget"
+import { Button } from "@material-ui/core"
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos"
+import "../../../styles/movieDetail.css"
 
 class MovieDetail extends Component {
+  componentDidMount() {
+    if (!this.props.isActiveTab) {
+      this.props.setActiveTab("catalog")
+    }
+  }
   render() {
     const movieId = this.props.match.params.id
     const movies = this.props.state.movies
@@ -10,24 +19,22 @@ class MovieDetail extends Component {
 
     return movie ? (
       <div id="movie-detail" data-id={movie.id}>
-        <Link className="back" to={`/catalog`}>
-          {"< Back"}
-        </Link>
+        <Budget budget={this.props.budget} />
+        <Button
+          startIcon={<ArrowBackIosIcon />}
+          style={{ color: "white" }}
+          href={`/catalog`}
+          className="back-btn"
+        >
+          Back
+        </Button>
         <h2 className="movie-title-year">
           {movie.title} ({movie.year})
         </h2>
-        <div className="movie-img">
-          <img src={movie.img} alt={movie.title}></img>
+        <Movie movie={movie} />
+        <div className="movie-description">
+          <h4>Plot Summary:</h4> <p>{movie.descrShort}</p>
         </div>
-        <p className="movie-description">{movie.descrShort}</p>
-        <div className="movie-price">price: {movie.price}$</div>
-        <RentingHandler
-          disabled={
-            movie.isRented ? false : this.props.budget - movie.price < 0
-          }
-          toggleRentedStatus={this.props.toggleRentedStatus}
-          movie={movie}
-        />
       </div>
     ) : (
       <Redirect to={`/catalog`} />
