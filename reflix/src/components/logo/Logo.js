@@ -1,8 +1,9 @@
 import React, { Component } from "react"
+import "../../styles/logo.css"
 
 class Logo extends Component {
   render() {
-    return <div id="app-logo">REFLIX</div>
+    return <h3 id="app-logo">REFLIX</h3>
   }
 }
 
