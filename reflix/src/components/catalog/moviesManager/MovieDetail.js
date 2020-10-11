@@ -33,37 +33,3 @@ export default function MovieDetail(props) {
     <Redirect to={`/catalog`} />
   )
 }
-/* 
-class MovieDetail extends Component {
-  componentDidMount() {
-    if (!this.props.isActiveTab) {
-      this.props.setActiveTab("catalog")
-    }
-  }
-  render() {
-    const movieId = this.props.match.params.id
-    const movies = this.props.movies
-    const movie = movies.find((m) => m.id === movieId)
-
-    return movie ? (
-      <div id="movie-detail" data-id={movie.id}>
-        <Budget budget={this.props.budget} />
-        <Link to={`/catalog`} className="back-btn">
-          {"< Back"}
-        </Link>
-        <h2 className="movie-title-year">
-          {movie.title} ({movie.year})
-        </h2>
-        <Movie movie={movie} />
-        <div className="movie-description">
-          <h4>Plot Summary:</h4> <p>{movie.descrShort}</p>
-        </div>
-      </div>
-    ) : (
-      <Redirect to={`/catalog`} />
-    )
-  }
-}
-
-export default MovieDetail
- */
