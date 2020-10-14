@@ -39,12 +39,6 @@
   background-color: transparent;
 }
 
-/* .toggle-rented:disabled {
-  background-color: lightgray !important;
-  color: gray !important;
-  cursor: not-allowed !important;
-} */
-
 .movie .toggle-rented:hover,
 .movie .toggle-rented:active {
   background-color: rgba(0, 0, 0, 0.8);
