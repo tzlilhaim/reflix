@@ -1,0 +1,9 @@
+#app-logo {
+  width: fit-content;
+  float: right;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-align: center;
+  color: red;
+  margin: 0;
+}
